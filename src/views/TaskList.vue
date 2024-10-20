@@ -2,10 +2,15 @@
     <div class="task-list-container">
         <h1>Lista de Tareas</h1>
         <button @click="fetchTasks" class="fetch-button">Cargar Tareas</button>
+
+        <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
+
         <div v-if="tasks.length > 0" class="task-list">
-            <div v-for="task in tasks" :key="task.id" class="task-item-wrapper">
-                <TodoItem :title="task.todo" :completed="task.completed" @toggle-completion="toggleTaskCompletion(task)"
-                    @delTodo="deleteTask(task)" />
+            <div v-for="task in tasks" :key="task.id" class="task-card">
+                <div class="task-content">
+                    <p>{{ task.todo }}</p>
+                    <button @click="addTaskToUser(task)" class="add-task-button">Añadir Tarea</button>
+                </div>
             </div>
         </div>
         <div v-else class="no-tasks">No hay tareas disponibles</div>
@@ -13,16 +18,17 @@
 </template>
 
 <script>
-import TodoItem from '@/components/TodoItem.vue';
-
 export default {
     name: "TaskList",
-    components: {
-        TodoItem
+    props: {
+        tasks: {
+            type: Array,
+            default: () => []
+        }
     },
     data() {
         return {
-            tasks: [],
+            successMessage: ''
         };
     },
     methods: {
@@ -35,21 +41,26 @@ export default {
                     return response.json();
                 })
                 .then(data => {
-                    this.tasks = data.todos;
+                    this.$emit('fetched-tasks', data.todos);
                 })
                 .catch(error => {
                     console.error('Error fetching tasks:', error);
                 });
         },
-        toggleTaskCompletion(task) {
-            task.completed = !task.completed;
+        addTaskToUser(task) {
+            const newTask = {
+                ...task,
+                id: Date.now()
+            };
+            this.$emit('add-task', newTask);
+            this.showSuccessMessage();
         },
-        deleteTask(task) {
-            this.tasks = this.tasks.filter((t) => t.id !== task.id);
-        },
-    },
-    created() {
-        this.fetchTasks();
+        showSuccessMessage() {
+            this.successMessage = '¡Tarea agregada exitosamente!';
+            setTimeout(() => {
+                this.successMessage = '';
+            }, 3000);
+        }
     }
 };
 </script>
@@ -59,45 +70,57 @@ export default {
     padding: 20px;
     max-width: 600px;
     margin: 0 auto;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-    text-align: center;
-    color: #343a40;
-    margin-bottom: 20px;
 }
 
 .fetch-button {
-    display: block;
-    margin: 0 auto 20px;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 5px;
     background-color: #007bff;
     color: white;
-    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    margin-bottom: 20px;
 }
 
 .fetch-button:hover {
     background-color: #0056b3;
 }
 
-.task-list {
-    margin-top: 20px;
+.task-card {
+    background-color: #f8f9fa;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.task-item-wrapper {
-    margin-bottom: 10px;
+.task-content {
+    flex-grow: 1;
+}
+
+.add-task-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-task-button:hover {
+    background-color: #218838;
 }
 
 .no-tasks {
     text-align: center;
-    color: gray;
-    font-size: 1.2em;
+    color: #999;
+}
+
+.success-message {
+    color: green;
+    margin-bottom: 10px;
 }
 </style>

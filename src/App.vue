@@ -1,125 +1,78 @@
 <template>
   <div id="app">
-    <!-- Barra de navegación con enlaces a diferentes rutas -->
     <nav class="navbar navbar-expand-lg" style="background-color: #007bff;">
-      <a class="navbar-brand" style="color: #ffffff;">Gestor de Tareas</a>
+      <a href="/" class="navbar-brand" style="color: #ffffff;margin-left: 8px;">Gestor de Tareas</a>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <router-link class="nav-link" to="/">
-              <i class="fas fa-home"></i>
-              <span class="nav-text">Inicio</span>
-            </router-link>
-          </li>
-          <li class="nav-item">
-            <router-link class="nav-link" to="/addtask">
-              <i class="fas fa-plus"></i>
+            <router-link class="nav-link" to="/createtask">
+              <i class="fas fa-plus" style="margin-right: 8px;"></i>
               <span class="nav-text">Agregar Tarea</span>
             </router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" to="/about">
-              <i class="fas fa-info-circle"></i>
-              <span class="nav-text">Acerca de</span>
+            <router-link class="nav-link" to="/tasklist">
+              <i class="fas fa-arrow-down" style="margin-right: 8px;"></i>
+              <span class="nav-text">Extraer Tareas</span>
+            </router-link>
+          </li>
+          <li class="nav-item">
+            <router-link class="nav-link" to="/combinedview">
+              <i class="fas fa-th-list" style="margin-right: 8px;"></i>
+              <span class="nav-text">Vista Combinada</span>
             </router-link>
           </li>
         </ul>
       </div>
     </nav>
-
-    <div class="mobile-menu">
-      <router-link to="/">
-        <i class="fas fa-home"></i>
-      </router-link>
-      <router-link to="/addtask">
-        <i class="fas fa-plus"></i>
-      </router-link>
-      <router-link to="/about">
-        <i class="fas fa-info-circle"></i>
-      </router-link>
-    </div>
-
-    <!-- Aquí se cargará el componente correspondiente a la ruta seleccionada -->
-    <router-view />
+    <router-view :tasks="fetchedTasks" :userTasks="userTasks" @add-task="addTask" @update-task="updateTask"
+      @delete-task="deleteTask" @fetched-tasks="setFetchedTasks" />
   </div>
 </template>
 
+<script>
+export default {
+  data() {
+    return {
+      fetchedTasks: [],
+      userTasks: [],
+    };
+  },
+  methods: {
+    addTask(newTask) {
+      this.userTasks.push(newTask);
+    },
+    updateTask(updatedTask) {
+      const index = this.userTasks.findIndex(task => task.id === updatedTask.id);
+      if (index !== -1) {
+        this.userTasks[index].completed = !this.userTasks[index].completed;
+      }
+    },
+    deleteTask(taskId) {
+      this.userTasks = this.userTasks.filter(task => task.id !== taskId);
+    },
+    setFetchedTasks(tasks) {
+      this.fetchedTasks = tasks;
+    }
+  }
+};
+</script>
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+body {
+  font-family: Arial, sans-serif;
   background-color: #f8f9fa;
-  min-height: 100vh;
 }
 
-nav {
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.navbar {
+  margin-bottom: 20px;
 }
 
-.navbar-brand {
-  font-size: 1.8em;
-  color: #ffffff;
-  margin-left: 20px;
-}
-
-.navbar-nav {
-  display: flex;
-}
-
-.nav-link {
-  font-weight: normal;
-  color: #ffffff !important;
-  display: flex;
-  align-items: center;
-  padding: 15px 20px;
-  transition: background-color 0.3s;
-}
-
-.nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-nav a .fas {
-  margin-right: 8px;
-  font-size: 1.5em;
+.navbar-nav .nav-link {
   color: #ffffff;
 }
 
-nav a .nav-text {
-  display: inline;
-}
-
-@media (max-width: 768px) {
-  nav a .nav-text {
-    display: none;
-  }
-
-  .mobile-menu {
-    display: block;
-  }
-}
-
-.mobile-menu {
-  display: none;
-  padding: 10px;
-  text-align: center;
-}
-
-.mobile-menu i {
-  margin-right: 24px;
-  font-size: 1.5em;
-  color: #007bff;
-}
-
-@media (max-width: 768px) {
-  .mobile-menu {
-    display: block;
-  }
+.navbar-nav .nav-link:hover {
+  color: #dcdcdc;
 }
 </style>

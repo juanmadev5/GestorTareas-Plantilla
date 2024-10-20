@@ -1,112 +1,99 @@
 <template>
-    <!-- Contenedor principal del ítem de tarea -->
-    <div class="todo-item">
-      <!-- Contenedor del título y el estado de la tarea -->
-      <div class="todo-header">
-        <!-- Muestra el título de la tarea y aplica un estilo tachado si la tarea está completada -->
-        <h5 :class="{ completed: completed }">{{ title }}</h5>
-  
-        <!-- Muestra si la tarea está Completada o Pendiente -->
-        <span :class="{ 'status-completed': completed, 'status-pending': !completed }">
-          {{ completed ? 'Completada' : 'Pendiente' }}
-        </span>
-      </div>
-  
-      <!-- Contenedor de botones de acción -->
-      <div class="button-group">
-        <!-- Botón para marcar la tarea como completada o pendiente -->
-        <button @click="$emit('toggle-completion')" class="toggle-button" aria-label="Marcar como completada">
-          <i class="fas" :class="completed ? 'fa-undo' : 'fa-check'"></i>
-        </button>
-  
-        <!-- Botón para eliminar la tarea de la lista -->
-        <button @click="$emit('delTodo')" class="delete-button" aria-label="Eliminar tarea">
-          <i class="fas fa-trash-alt"></i>
-        </button>
-      </div>
+  <div class="todo-item">
+    <div class="todo-header">
+      <h5 :class="{ completed: completed }">{{ title }}</h5>
+      <span :class="{ 'status-completed': completed, 'status-pending': !completed }">
+        {{ completed ? 'Completada' : 'Pendiente' }}
+      </span>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    // Define el nombre del componente
-    name: 'TodoItem',
-  
-    // Define las propiedades que este componente recibirá del componente padre
-    props: {
-      title: String,      // Título de la tarea
-      completed: Boolean, // Estado de la tarea (completada o pendiente)
-    }
+
+    <div class="button-group">
+      <button @click="$emit('toggle-completion')" class="toggle-button" aria-label="Marcar como completada">
+        <i class="fas" :class="completed ? 'fa-undo' : 'fa-check'"></i>
+      </button>
+      <button @click="$emit('delTodo')" class="delete-button" aria-label="Eliminar tarea">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'TodoItem',
+  props: {
+    title: String,
+    completed: Boolean,
   }
-  </script>
-  
-  <style scoped>
-  .todo-item {
-    background-color: #ffffff; /* Fondo blanco para un buen contraste */
-    border: 1px solid #e0e0e0; /* Borde sutil */
-    border-radius: 8px; /* Bordes redondeados */
-    padding: 15px; /* Espaciado interno */
-    margin-bottom: 10px; /* Espaciado entre ítems */
-    display: flex; /* Usar flexbox para disposición */
-    justify-content: space-between; /* Espacio entre elementos */
-    align-items: center; /* Centrar verticalmente */
-    transition: all 0.3s; /* Animación suave en cambios de estado */
-  }
-  
-  .todo-header {
-    flex: 1; /* Permitir que el título ocupe el espacio disponible */
-  }
-  
-  h5 {
-    margin: 0; /* Sin margen para un diseño más limpio */
-    font-size: 1.2em; /* Tamaño de fuente del título */
-  }
-  
-  .completed {
-    text-decoration: line-through; /* Tachar texto si está completada */
-    color: gray; /* Color gris para tareas completadas */
-  }
-  
-  .status-completed {
-    color: #28a745; /* Verde para tareas completadas */
-    font-weight: bold; /* Negrita para destacar */
-  }
-  
-  .status-pending {
-    color: #dc3545; /* Rojo para tareas pendientes */
-    font-weight: bold; /* Negrita para destacar */
-  }
-  
-  .button-group {
-    display: flex; /* Usar flexbox para disposición de botones */
-    gap: 10px; /* Espacio entre botones */
-  }
-  
-  .toggle-button,
-  .delete-button {
-    padding: 10px; /* Espaciado interno para botones */
-    border: none; /* Sin borde */
-    border-radius: 5px; /* Bordes redondeados */
-    cursor: pointer; /* Cambiar cursor al pasar por encima */
-    transition: background-color 0.3s; /* Suave animación al pasar el mouse */
-    background: none; /* Sin fondo */
-  }
-  
-  .toggle-button:hover {
-    background-color: rgba(0, 123, 255, 0.1); /* Fondo claro al pasar el mouse */
-  }
-  
-  .delete-button:hover {
-    background-color: rgba(220, 53, 69, 0.1); /* Fondo claro al pasar el mouse */
-  }
-  
-  i {
-    font-size: 1.2em; /* Tamaño del icono */
-    color: #007bff; /* Color del icono */
-  }
-  
-  .delete-button i {
-    color: #dc3545; /* Color rojo para el icono de eliminar */
-  }
-  </style>
-  
+}
+</script>
+
+<style scoped>
+.todo-item {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s;
+}
+
+.todo-header {
+  flex: 1;
+}
+
+h5 {
+  margin: 0;
+  font-size: 1.2em;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: gray;
+}
+
+.status-completed {
+  color: #28a745;
+  font-weight: bold;
+}
+
+.status-pending {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.toggle-button,
+.delete-button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  background: none;
+}
+
+.toggle-button:hover {
+  background-color: rgba(0, 123, 255, 0.1);
+}
+
+.delete-button:hover {
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+i {
+  font-size: 1.2em;
+  color: #007bff;
+}
+
+.delete-button i {
+  color: #dc3545;
+}
+</style>
